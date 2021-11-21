@@ -11,8 +11,6 @@ db.authenticate().then(() =>
     console.log("berhasil terkoneksi dengan database")
 )
 
-const User = require("./models/user")
-
 app.use(express.static('public'))
 app.set('view engine', 'ejs')
 
