@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head.ejs')%>
+<body>
+    <% const name = 'Rinaldi'%>
+    <%- include('../partials/nav.ejs')%>
+
+    <div class="blogs content">
+        <nav>
+            <ul>
+                <li><a href="/products/create">New Product</a></li>
+            </ul>
+        </nav>
+        <%= name %>
+        <h2>All Products</h2>
+        <% if(products.length > 0) { %>
+            <% products.forEach(blog => { %>
+                <a class="single" href="/products/<%= blog.id %>">
+                    <h3 class="title"><%= blog.user.username %></h3>
+                    <h3 class="title"><%= blog.nama_product %></h3>
+                    <p class="snippet"><%= blog.satuan %></p>
+                    <p class="snippet"><%= blog.jenis %></p>
+                </a>
+                <hr>
+            <% })%>
+        <% } else { %>
+            <h3>Data not exists</h3>
+        <% } %>
+    </div>
+    <%- include('../partials/footer.ejs')%>
+</body>
+</html>

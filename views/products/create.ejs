@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../partials/head.ejs')%>
+<body>
+    <%- include('../partials/nav.ejs')%>
+
+    <div class="create-blog">
+        <h2>Create Product</h2>
+        <form action="/products" method="POST">
+            <label for="title">Nama Product:</label>
+            <select name="userId" required>
+                <% users.forEach(blog => { %>
+                    <option value="<%= blog.id %>"><%= blog.username %></option>
+                <% })%>
+            </select>
+            <label for="title">Nama Product:</label>
+            <input type="text" id="title" name="nama_product" required>
+            <label for="snippet">Satuan:</label>
+            <input type="text" id="snippet" name="satuan" required>
+            <label for="body">Jenis:</label>
+            <input type="text" id="snippet" name="jenis" required>
+            <button>Submit</button>
+        </form>
+    </div>
+    <%- include('../partials/footer.ejs')%>
+</body>
+</html>
