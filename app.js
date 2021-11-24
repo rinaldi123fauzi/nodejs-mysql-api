@@ -80,7 +80,7 @@ app.delete("/delete/:id", async (req, res) => {
     }
 })
 
-app.put("/update/:id", async (req, res) => {
+app.put("/update/:id", verifyToken, async (req, res) => {
     try {
         const {username, email, password} = req.body
         const id = req.params.id
@@ -91,10 +91,14 @@ app.put("/update/:id", async (req, res) => {
             password
         }, {where: {id:id} })
 
-        await updateUser
-
-        res.json("berhasil diupdate")
-
+        jwt.verify(req.token, 'secretkey', (err, authData) => {
+            if (err) {
+                res.sendStatus(403)
+            }else{
+                updateUser
+                res.json("berhasil diupdate")
+            }
+        })
     } catch (error) {
         console.error(error.message)
         res.status(500).send("server error")
@@ -108,7 +112,7 @@ app.post("/api/login", (req, res) => {
         email: 'rinaldi@n.com'
     }
 
-    jwt.sign({user}, 'secretkey', {expiresIn: "1m"}, (err, token) => {
+    jwt.sign({user}, 'secretkey', {expiresIn: "10m"}, (err, token) => {
         res.json({
             token
         })
