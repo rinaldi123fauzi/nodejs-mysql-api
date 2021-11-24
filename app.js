@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express();
 const db = require("./config/db")
+const jwt = require("jsonwebtoken")
 
 app.get("/", (req, res) => res.send("respon nodejs berhasil"))
 
@@ -31,10 +32,19 @@ app.post("/create", async (req, res) => {
     }
 })
 
-app.get("/get", async (req, res) => {
+app.get("/get", verifyToken, async (req, res) => {
     try {
         const getAllUser = await User.findAll({})
-        res.json(getAllUser)
+        jwt.verify(req.token, 'secretkey', (err, authData) => {
+            if (err) {
+                res.sendStatus(403)
+            } else {
+                res.json({
+                    getAllUser,
+                    authData
+                })
+            }
+        })
     } catch (error) {
         console.error(error.message)
         res.status(500).send("server error")
@@ -90,5 +100,42 @@ app.put("/update/:id", async (req, res) => {
         res.status(500).send("server error")
     }
 })
+
+app.post("/api/login", (req, res) => {
+    const user = {
+        id: 1,
+        username: 'rinaldi',
+        email: 'rinaldi@n.com'
+    }
+
+    jwt.sign({user}, 'secretkey', {expiresIn: "1m"}, (err, token) => {
+        res.json({
+            token
+        })
+    })
+})
+
+//FORMAT TOKEN
+//Authorization: Bearer <access_token>
+
+function verifyToken(req, res, next){
+    //Get auth header value
+    const bearerHeader = req.headers['authorization'];
+    //Check if bearer is undefined
+    if (typeof bearerHeader !== 'undefined'){
+        //Split at the space
+        const bearer = bearerHeader.split(' ');
+        //Get token from array
+        const bearerToken = bearer[1];
+        //Set the token
+        req.token = bearerToken;
+        //Next middleware
+        next();        
+    }else{
+        //Forbidden
+        res.sendStatus(403);
+    }
+
+}
 
 app.listen(5000, () => console.log("port berjalan di 5000"))
